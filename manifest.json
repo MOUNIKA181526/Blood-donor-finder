@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://juiegakepoguucxkjrrj.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "blood-donor-finder",
+      "version": "0.1.0",
+      "title": "Blood Donor Finder"
+    },
+    "tools": [
+      {
+        "name": "search_donors",
+        "title": "Search donors",
+        "description": "Search publicly listed blood donors by optional blood group, state, and/or city. Returns donor name, blood group, state, city, contact, and Aadhaar-verified flag.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "blood_group": {
+              "description": "Blood group to match, e.g. 'O+'.",
+              "type": "string",
+              "enum": [
+                "O+",
+                "O-",
+                "A+",
+                "A-",
+                "B+",
+                "B-",
+                "AB+",
+                "AB-"
+              ]
+            },
+            "state": {
+              "description": "Indian state name.",
+              "type": "string"
+            },
+            "city": {
+              "description": "City name (case-insensitive substring match).",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Max results, default 25.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_my_profile",
+        "title": "Get my donor profile",
+        "description": "Return the signed-in user's donor profile (name, blood group, state, city, contact, listing status, Aadhaar-verified flag).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "update_my_profile",
+        "title": "Update my donor profile",
+        "description": "Update the signed-in user's donor profile fields. Any omitted field is left unchanged. Aadhaar cannot be set through MCP.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "blood_group": {
+              "type": "string",
+              "enum": [
+                "O+",
+                "O-",
+                "A+",
+                "A-",
+                "B+",
+                "B-",
+                "AB+",
+                "AB-"
+              ]
+            },
+            "state": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "city": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "contact": {
+              "description": "Publicly displayed phone.",
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 40
+            },
+            "is_listed": {
+              "description": "Whether to appear in public search.",
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
